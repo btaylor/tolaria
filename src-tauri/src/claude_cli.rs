@@ -316,11 +316,13 @@ fn preapproved_agent_tools(permission_mode: AiAgentPermissionMode) -> Option<&'s
 
 /// Build a temporary MCP config JSON string pointing to the vault MCP server.
 fn build_mcp_config(vault_path: &str) -> Result<String, String> {
+    let node = crate::mcp::find_node()?;
+    let node_command = node.to_string_lossy();
     let mcp_server_path = crate::cli_agent_runtime::mcp_server_path_string()?;
     let config = serde_json::json!({
         "mcpServers": {
             "tolaria": {
-                "command": "node",
+                "command": node_command,
                 "args": [mcp_server_path],
                 "env": { "VAULT_PATH": vault_path }
             }

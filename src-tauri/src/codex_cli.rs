@@ -216,6 +216,8 @@ fn build_codex_args(
     request: &AgentStreamRequest,
     last_message_path: Option<&Path>,
 ) -> Result<Vec<String>, String> {
+    let node = crate::mcp::find_node()?;
+    let node_command = node.to_string_lossy();
     let mcp_server_path = crate::cli_agent_runtime::mcp_server_path_string()?;
 
     let mut args = vec![
@@ -228,7 +230,7 @@ fn build_codex_args(
         "-C".into(),
         request.vault_path.clone(),
         "-c".into(),
-        r#"mcp_servers.tolaria.command="node""#.into(),
+        format!(r#"mcp_servers.tolaria.command="{node_command}""#),
         "-c".into(),
         format!(r#"mcp_servers.tolaria.args=["{}"]"#, mcp_server_path),
         "-c".into(),
